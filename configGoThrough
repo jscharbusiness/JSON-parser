@@ -1,0 +1,387 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+338
+
+{
+    "Header": [
+        {
+        	"Template": "L",
+        	"Logo": [
+	        	{
+	            	"url": "/images/layout/headerLogo.png",
+	            	"width": "275px",
+	            	"height": "42px"
+	            }
+	        ],
+	        "Styles": [
+	        	{
+	        		"height": "105px",
+	        		"position": "fixed",
+	        		"background-color": "rgba(0,0,0,.5)",
+	        		"background-gradient": "0"
+	        	}
+	        ],
+	        "Mobile": [
+	        	{
+	        		"height": "95px"
+	        	}
+	        ]
+        }
+    ]
+}
+
+
+
+
+
+
+Header
+	Template:L
+	Styles
+		background:red;
+		position:fixed;
+	MobileStyles
+		background:green;
+	SocialMedia
+		Options
+			On/Off
+		Container
+			Styles
+				position:relative
+		Icons
+			Styles
+				width:20px
+				height:20px
+				border:1px solid black
+
+	Logo
+		URL:.../images/logo
+		Styles
+			width:20px
+			height:20px
+
+	Navigation
+		Links
+			Name:Search
+			URL:.../search/
+				Dropdown
+
+		
+AboveTheFold
+	Template:L
+	Styles
+
+	mobileStyles
+	MainSearchSection
+		MainHeading
+			Options
+				Display?
+			Text:
+			Styles
+		SecondHeading
+			Styles
+				Padding:20px
+		Search
+			Options
+
+
+Where do you put custom styles?
+
+
+{
+
+    "InternalPageMaxWidth": "100%",
+    "ColorBodyContentAreaBorderStyle": "border: none;",
+    "ColorBodyContentAreaMargin": "margin: 20px auto;",
+    "InternalPagePadding": "30px 0",
+
+    "HeaderBackgroundGrad": "0", (gradient?)
+
+
+    "AboveTheFoldBGPage": "1334742",
+
+
+    "LoginPhoneColor": "#ffffff",
+
+    "BelowTheFoldBGPage": "1201851",
+
+    "CustomBuyingPage": "1334712",
+
+
+    "CustomSellingPage": "1334713",
+   
+    "CustomCareersPage": "1334714",
+
+
+    "BFFeaturedHomesQueryScope": "1",
+
+
+    "external_files": [
+        {
+            "location": "top",
+            "href": "/includes/styleModular.css",
+            "tag_type": "link"
+        }
+    ],
+
+
+    "SEOWrapperMaxWidthMarkets": "1280px",
+    "SEOMarketList1StateID": "6",
+    "SEOMarketList1StateAb": "CA",
+
+    "SEOMarketList1FeaturedQueryScope": "1",
+
+    "ColorMainBodyTag3": "#e65833",
+    "ColorMainBodyTag3h": "#bc4829",
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+    "Responsive": "true",
+    "SiteHeader": "L",
+    "AboveTheFold": "L",
+    "BelowTheFold": "M",
+    "Footer": "L",
+    "PrimaryColor": "#53565a",
+    "SecondaryColor": "#e65833",
+    "TertiaryColor": "#f2f2f2",
+    "WrapperMaxWidth": "1280px",
+    "InternalPageMaxWidth": "100%",
+    "ColorBodyContentAreaBorderStyle": "border: none;",
+    "ColorBodyContentAreaMargin": "margin: 20px auto;",
+    "InternalPagePadding": "30px 0",
+    "HeaderPosition": "fixed",
+    "HeaderLogoURL": "/images/layout/headerLogo.png",
+    "HeaderLogoWidth": "275px",
+    "HeaderLogoHeight": "42px",
+    "HeaderHeight": "105px",
+    "HeaderHeightMobile": "95px",
+    "HeaderBackgroundColor": "rgba(0,0,0,.5)",
+    "HeaderBackgroundGrad": "0",
+    "SlideshowBackgroundOverlay": "rgba(0,0,0,.5)",
+    "AboveTheFoldBGPage": "1334742",
+    "HeaderMaxWidth": "1280px",
+    "ShowTopBarSocial": "1",
+    "SocialIconBorder": "none",
+    "SocialIconBorderHover": "none",
+    "SocialIconPadding": "7px 3px",
+    "SocialIconSize": "21px",
+    "SocialIconColor": "#a7a7a7",
+    "ContactBackground": "#53565a",
+    "LoginPhoneColor": "#ffffff",
+    "MHFLinkSeparator": "/",
+    "MobileHFTopBarBackground": "#ffffff",
+    "MobileHFLinkColor": "#3c3c3c",
+    "MobileHFLinkColorHover": "#e65833",
+    "MobilePhoneColor": "#3c3c3c",
+    "MobilePhoneColorHover": "#e65833",
+    "AboveTFMainHeadline": "California and Lake Tahoe Area Real Estate",
+    "AboveTFSubHeadline": "Find Your <em>Next Home</em>",
+    "MainHeadlineSize": "30px",
+    "MainHeadlineTransform": "normal",
+    "MainHeadlinePadding": "0 0 10px 0",
+    "SubHeadSize": "60px",
+    "SubHeadLineHeight": "72px",
+    "SubHeadTransform": "uppercase",
+    "SubHeadFontFamily": "'Karma', serif",
+    "SubHeadEmWeight": "bold",
+    "MainHeadlineSizeMobile": "36px",
+    "MainHeadlineLineHeightMobile": "30px",
+    "HeadlineUnderlineDisplayMobile": "none",
+    "MainSearchMaxWidth": "720px",
+    "MainSearchButtonBackgroundColor": "#e65833",
+    "MainSearchButtonBackgroundColorHover": "#c64828",
+    "AboveTFAgentTab": "1",
+    "AboveTFAVMTab": "1",
+    "MainSearchTabHeight": "50px",
+    "MainSearchTabHeightOff": "49px",
+    "MainSearchTabMarginRight": "3px",
+    "MainSearchTabBorderWidth": "5px 0 0 0",
+    "MainSearchTabBorderColor": "#e65833",
+    "MainSearchTabBorderWidthOff": "5px 0 0 0",
+    "MainSearchTabBorderColorOff": "rgba(255,255,255,0.3)",
+    "MainSearchTabBorderWidthHover": "5px 0 0 0",
+    "MainSearchTabBorderColorHover": "#c64828",
+    "MainSearchTabFontSize": "18px",
+    "MainSearchTabHeightMobile": "50px",
+    "MainSearchFieldHeights": "50px",
+    "MainSearchInputPadding": "10px",
+    "MainSearchButtonWidth": "50px",
+    "MainSearchButtonFontSize": "21px",
+    "AboveTFBottomBar": "0",
+    "BelowTheFoldBGPage": "1201851",
+    "BelowSectionOrder": "slogan, Buying, Selling, Careers, blog",
+    "BFSloganBGImage": "",
+    "BFSloganBGColor": "#e65833",
+    "BFSloganBGOverlayColor": "transparent",
+    "BFSlogan": "Pacific Union International Ranks #5 In the Nation<br>The Ultimate California Company",
+    "BFSloganButtonText": "Learn More",
+    "CustomBuyingPage": "1334712",
+    "BFBuyingBGImage": "/shared/fs/0338/company/buyingBg.jpg",
+    "BFBuyingBGOverlayColor": "linear-gradient(60deg, rgba(255,255,255,0.9) 50%, transparent)",
+    "BFBuyingBGOverlayOpacity": "1",
+    "BFBuyingBGImageSize": "cover",
+    "BFBuyingTitleColor": "#e65833",
+    "BFBuyingTitleFontSize": "48px",
+    "BFBuyingTitleLineHeight": "52px",
+    "CustomSellingPage": "1334713",
+    "BFSellingBGImage": "",
+    "BFSellingBGColor": "#53565a",
+    "BFSellingBGOverlayColor": "transparent",
+    "BFSellingBGOverlayOpacity": "0",
+    "BFSellingBGImageSize": "cover",
+    "BFSellingTitleColor": "#e65833",
+    "BFSellingTitleFontSize": "48px",
+    "BFSellingTitleLineHeight": "52px",
+    "BFSellingWidth": "70%",
+    "BFSellingParaColor": "#ffffff",
+    "CustomCareersPage": "1334714",
+    "BFCareersBGImage": "/shared/fs/0338/company/content_content_pic_bikers.jpg",
+    "BFCareersBGOverlayColor": "linear-gradient(60deg, #ffffff 50%, transparent)",
+    "BFCareersBGOverlayOpacity": "1",
+    "BFCareersBGImageSize": "70% auto",
+    "BFCareersTitleColor": "#e65833",
+    "BFCareersTitleFontSize": "48px",
+    "BFCareersTitleLineHeight": "52px",
+    "BFBlogTitleColor": "#e65833",
+    "BFBlogDateBgColor": "#53565a",
+    "BelowTheFoldBlogURL": "http://feeds.feedburner.com/PacUnionBlog?format=rss",
+    "BFFeaturedTitleFontColor": "#e65833",
+    "BFFeaturedHomesQueryScope": "1",
+    "FooterOfficeAddressArr": [
+        "1699 Van Ness Avenue<br>San Francisco, CA 94109<br>Tel: 844-773-7434<br>Email: info@pacunion.com"
+    ],
+    "FooterLogo": "/images/layout/footerLogo.png",
+    "Navigation": [
+        {
+            "Title": "PROPERTIES",
+            "URL": "/results/",
+            "sub": [
+                {
+                    "Title": "RESIDENTIAL",
+                    "URL": "/results/"
+                },
+                {
+                    "Title": "COMMERCIAL",
+                    "URL": "/results/?property_category=commercial"
+                },
+                {
+                    "Title": "MULTI-FAMILY",
+                    "URL": "/results/?property_category=multi"
+                },
+                {
+                    "Title": "MAP SEARCH",
+                    "URL": "/map/"
+                }
+            ]
+        },
+        {
+            "Title": "MARKET",
+            "URL": "#"
+        },
+        {
+            "Title": "AGENTS & OFFICES",
+            "URL": "/getagent/"
+        },
+        {
+            "Title": "CONTACT",
+            "URL": "/contact/"
+        }
+    ],
+    "external_files": [
+        {
+            "location": "top",
+            "href": "/includes/styleModular.css",
+            "tag_type": "link"
+        }
+    ],
+    "Seo": "G",
+    "SEOWrapperMaxWidthFeatured": "100%",
+    "SEOWrapperMaxWidthMarkets": "1280px",
+    "SEOMarketsBackgroundImage": "/shared/images/predesigns/backgrounds/street-of-modern-homes.jpg",
+    "SEOMarketList1StateID": "6",
+    "SEOMarketList1StateAb": "CA",
+    "SEOMarketList1BrowseTitle": "Browse California Homes for Sale",
+    "SEOMarketList1FeaturedTitle": "Latest California Homes For Sale",
+    "SEOMarketList1FeaturedNumber": "9",
+    "SEOMarketList1FeaturedQueryScope": "1",
+    "SEOMarketList1FeaturedQuery": "AND state_id = 6 AND price_asking > '80000' AND property_category_residential = 1",
+    "SEOMarketLinkColor": "#e65833",
+    "SEOMarketLinkColorHover": "#333333",
+    "FeaturedLinkColor": "#e65833",
+    "FeaturedLinkColorHover": "#333333",
+    "ColorBodyH1": "#e65833",
+    "ColorBodyH2": "#53565a",
+    "ColorBodyH3": "#53565a",
+    "ColorBodyH4": "#53565a",
+    "ColorBodyH5": "#53565a",
+    "ColorBodyH6": "#53565a",
+    "ColorMainBodyTag3": "#e65833",
+    "ColorMainBodyTag3h": "#bc4829",
+    "GoogleFontUrl": "Raleway:300,400,700|Karma:300,400",
+    "FontFaceBodyHTags": "'Karma', serif",
+    "FontFace": "'Raleway', sans-serif"
+}
+
+
+
+
+
+
+
+What is up with this:
+
+timinginformationlayer_modal
+
+
+
+
+
+

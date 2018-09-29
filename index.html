@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<title>JSON converter</title>
+
+
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+
+
+	<style>
+
+		body {
+
+			font-family: 'Raleway', sans-serif;
+
+		}	
+
+
+
+	</style>
+
+</head>
+
+<body>
+
+	<textarea name="oldJSON" id="oldJSON" cols="70" rows="30">
+
+{
+
+    "Header": [
+
+        {
+
+        	"Template": "L",
+
+        	"Logo": [
+
+	        	{
+
+	            	"url": "/images/layout/headerLogo.png",
+
+	            	"width": "275px",
+
+	            	"height": "42px"
+
+	            }
+
+	        ],
+
+	        "Styles": [
+
+	        	{
+
+	        		"height": "105px",
+
+	        		"position": "fixed",
+
+	        		"background-color": "rgba(0,0,0,.5)",
+
+	        		"background-gradient": "0",
+
+	        		"max-width": "1280px"
+
+	        	}
+
+	        ],
+
+	        "Mobile": [
+
+	        	{
+
+	        		"height": "95px"
+
+	        	}
+
+	        ]
+
+        }
+
+    ]
+
+} 
+
+
+
+	</textarea>
+
+	<textarea name="newJSON" id="newJSON" cols="70" rows="30"></textarea>
+
+	<button id="convert">Convert</button>
+
+
+
+<!-- 
+
+
+
+{
+
+    "Header": [
+
+        {
+
+        	"Template": "L",
+
+        	"Logo": [
+
+	        	{
+
+	            	"url": "/images/layout/headerLogo.png",
+
+	            	"width": "275px",
+
+	            	"height": "42px"
+
+	            }
+
+	        ],
+
+	        "Styles": [
+
+	        	{
+
+	        		"height": "105px",
+
+	        		"position": "fixed",
+
+	        		"background-color": "rgba(0,0,0,.5)",
+
+	        		"background-gradient": "0",
+
+	        		"max-width": "1280px"
+
+	        	}
+
+	        ],
+
+	        "Mobile": [
+
+	        	{
+
+	        		"height": "95px"
+
+	        	}
+
+	        ]
+
+        }
+
+    ]
+
+} 
+
+
+
+-->
+
+
+
+<!-- {
+
+	"Header": {
+
+		"Template": "L",
+
+		"Logo": {
+
+			"url": "/images/layout/headerLogo.png",
+
+			"width": "275px",
+
+			"height": "42px"
+
+		},
+
+		"Styles": {
+
+			"height": "105px",
+
+			"position": "fixed",
+
+			"background-color": "rgba(0,0,0,.5)",
+
+			"background-gradient": "0",
+
+			"max-width": "1280px"
+
+		},
+
+		"Mobile": {
+
+			"height": "95px"
+
+		}
+
+	}
+
+} -->
+
+
+
+
+
+
+
+	<!-- Go through checklist and have hidden divs  -->
+
+
+
+
+
+
+
+	<script>
+
+
+
+		var textareas = document.getElementsByTagName('textarea');
+
+		var count = textareas.length;
+
+		for(var i=0;i<count;i++){
+
+		    textareas[i].onkeydown = function(e){
+
+		        if(e.keyCode==9 || e.which==9){
+
+		            e.preventDefault();
+
+		            var s = this.selectionStart;
+
+		            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+
+		            this.selectionEnd = s+1; 
+
+		        }
+
+		    }
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+		document.getElementById('convert').addEventListener('click', convert);
+
+
+
+
+
+		// Array with currentJSON possible values as Keys.  newJSON paths as values. On submit if the "path" exists, add to newJSON file to put in the config.
+
+
+
+
+
+		// Go through all possible things in json and use that to look up the name of that "path".  Then add the name and the value to the new json config
+
+
+
+		// var lookupValues = [
+
+		// 	SiteHeader: "L",
+
+		// 	HeaderPosition: "fixed",
+
+		// 	HeaderLogoURL: "/images/laout/headerLogo.png",
+
+		// 	HeaderLogoWidth: "275px",
+
+		// 	HeaderLogoHeight: "42px",
+
+		// 	HeaderHeight: "105px",
+
+		// 	HeaderBackgroundColor: "rgba(0,0,0,.5)",
+
+		// 	HeaderBackgroundGrad: "0",
+
+		// 	HeaderMaxWidth: "1280px"
+
+		// ];
+
+
+
+		// var lookupValues = {
+
+		// 	SiteHeader: "Header.Template",
+
+		// 	HeaderPosition: "Header.Styles.position",
+
+		// 	HeaderLogoURL: "Header.Logo.url",
+
+		// 	HeaderLogoWidth: "Header.Logo.width",
+
+		// 	HeaderLogoHeight: "Header.Logo.height",
+
+		// 	HeaderHeight: "Header.Styles.height",
+
+		// 	HeaderBackgroundColor: "Header.Styles.background-color",
+
+		// 	HeaderBackgroundGrad: "Header.Styles.background-gradient",
+
+		// 	HeaderMaxWidth: "Header.Styles.max-width"
+
+		// };
+
+
+
+
+
+		// var somedata = {
+
+		//    "Pizza" : ["Cheese", "Bread", "Sauce"],
+
+		//    "Spaghetti" : ["Pasta", "Sauce", "Meatballs"]
+
+		// }
+
+
+
+		// Object.keys(somedata)       // returns  ["Pizza", "Spaghetti"]
+
+		// Object.keys(somedata)[0]   // returns  "Pizza"
+
+		// Object.keys(somedata)[1]   // returns "Spaghetti"
+
+
+
+		// somedata["Pizza"]    // returns ["Cheese", "Bread", "Sauce"]
+
+		// somedata["Spaghetti"]   // returns  ["Pasta", "Sauce", "Meatballs"]
+
+
+
+		// //---------------
+
+		// Object.values(somedata)        // returns  [Array(3), Array(3)]
+
+		// Object.values(somedata)[0]    // returns ["Cheese", "Bread", "Sauce"]
+
+		// Object.values(somedata)[1]    // returns ["Pasta", "Sauce", "Meatballs"]
+
+
+
+		// var neededValues = [
+
+		// 	"SiteHeader",
+
+		// 	"HeaderPosition",
+
+		// 	"HeaderLogoURL",
+
+		// 	"HeaderLogoWidth",
+
+		// 	"HeaderLogoHeight",
+
+		// 	"HeaderHeight",
+
+		// 	"HeaderBackgroundColor",
+
+		// 	"HeaderBackgroundGrad",
+
+		// 	"HeaderMaxWidth"
+
+		// ];
+
+
+
+
+
+		var lookupValues = {
+
+			"Header.Template": "SiteHeader",
+
+			"Header.Styles.position": "HeaderPosition",
+
+			"Header.Logo.url": "HeaderLogoURL.logo.go.stay",
+
+			"Header.Logo.width": "HeaderLogoURL.logo.go.went",
+
+			//"Header.Logo.width": "HeaderLogoWidth",
+
+			"Header.Logo.height": "HeaderLogoHeight",
+
+			"Header.Styles.height": "HeaderHeight",
+
+			"Header.Styles.background-color": "HeaderBackgroundColor",
+
+			"Header.Styles.background-gradient": "HeaderBackgroundGrad",
+
+			"Header.Styles.max-width": "HeaderMaxWidth",
+
+			"Header.Mobile.height": "HeaderHeightMobile"
+
+		};
+
+
+
+		// valueArray = lookupValues['Header.Logo.url'].split('.');
+
+		// console.log(valueArray.length);
+
+		// value == 4
+
+
+
+		// if object[valueArray[0]] exists
+
+			//newObject = object[valueArray[0]];
+			function create(object, index, valueArray) {
+				if (object[valueArray[index]] && object[arrayValue[index]] != arrayValue[arrayValue.length - 1]) {
+					create(object, index+1, valueArray);
+				} else {
+					for (var i = valueArray.length; i > indexToStopAt; i--) {
+
+					}
+				}
+			}
+
+
+
+			// if newObject[valueArray[1]] exists
+
+			// else (need to add in check if object here)
+				// var indexToStopAt = 1
+				// for (var i = valueArray.length; i > indexToStopAt; i--) {
+					// if (i == valueArray.length) {
+						// tempOBJ = {valueArray[i-1]: valueArray[i]}
+					//} else {
+						// tempOBJ = {valueArray[i]: tempOBJ}
+					//}
+				// }
+				// object[valueArray[1]] = tempOBJ;
+			// endif
+
+		// else         (this doesnt need to check if object since it's creating the first time)
+			// var indexToStopAt = 0;
+			// for (var i = valueArray.length; i > indexToStopAt; i--) {
+				// if (i == valueArray.length) {
+					// tempOBJ = {valueArray[i-1]: valueArray[i]}
+				//} else {
+					// tempOBJ = {valueArray[i]: tempOBJ}
+				//}
+			// }
+			// object[valueArray[0]] = tempOBJ;
+		// endif
+
+
+// if object[arrayValue[next]] != arrayValue[arrayValue.length - 1]
+
+		// if HeaderLogoURL exists
+			// if headerlogourl.logo exists
+				// if headerlogourl.logo.go exists
+					// if headerlogourl.logo.go.went exists
+						// headerlogourl.logo.go.went = value.  
+					// else
+						// if headerlogourl.logo.go = object
+							// headerlogourl.logo.go[went] = value
+						// else
+							// tempOBJ = {went: value}
+							// headerlogourl.logo.go = tempOBJ
+						// endif
+					//endif
+				// else
+					// if headerlogourl.logo = object
+						// tempOBJ = {went: value}
+						//headerlogourl.logo[go] = tempOBJ
+					//else 
+						// tempOBJ = {went: value}
+						// tempOBJ = {go: tempOBJ}
+						// headerlogourl.logo = tempOBJ
+					//endif
+				//endif
+			// else
+				// if headerlogourl = object
+					// tempOBJ = {went: value}
+					// tempOBJ = {go: tempOBJ}
+					// headerlogourl[logo] = tempOBJ
+				//else 
+					// tempOBJ = {went: value}
+					// tempOBJ = {go: tempOBJ}
+					// tempOBJ = {logo: tempOBJ}
+					// headerlogourl = tempOBJ
+				//endif
+
+				// if path = object {
+
+				//}
+
+			//endif	
+		// else
+			// if arrayValue.length > 2 {
+				// tempOBJ = {arrayValue[arrayValue.length-2]: arrayValue[arrayValue.length-1]}
+			//} else {
+				// var indexToStopAt = 0;
+				// for (var i = valueArray.length; i > indexToStopAt; i--) {
+					// if (i == valueArray.length) {
+						// tempOBJ = {valueArray[i-1]: valueArray[i]}
+					//} else {
+						// tempOBJ = {valueArray[i]: tempOBJ}
+					//}
+				// }
+				// object[valueArray[0]] = tempOBJ;
+			//}
+
+			// tempOBJ = {went: value}
+			// tempOBJ = {go: tempOBJ}
+			// tempOBJ = {logo: tempOBJ}
+			// object[headerlogourl] = tempOBJ
+		//endif	
+
+
+
+		// if object[valueArray[0]] exists
+			// if object[valueArray[0]].logo exists
+				// if object[valueArray[0]].logo.go exists
+					// if object[valueArray[0]].logo.go.went exists
+						// object[valueArray[0]].logo.go.went = value.  
+					// else
+						// if object[valueArray[0]].logo.go = object
+							// object[valueArray[0]].logo.go[went] = value
+						// else
+							// tempOBJ = {went: value}
+							// object[valueArray[0]].logo.go = tempOBJ
+						// endif
+					//endif
+				// else
+					// if object[valueArray[0]].logo = object
+						// tempOBJ = {went: value}
+						//object[valueArray[0]].logo[go] = tempOBJ
+					//else 
+						// tempOBJ = {went: value}
+						// tempOBJ = {go: tempOBJ}
+						// object[valueArray[0]].logo = tempOBJ
+					//endif
+				//endif
+			// else
+				// if object[valueArray[0]] = object
+					// tempOBJ = {went: value}
+					// tempOBJ = {go: tempOBJ}
+					// object[valueArray[0]][logo] = tempOBJ
+
+				//else 
+
+					// tempOBJ = {went: value}
+					// tempOBJ = {go: tempOBJ}
+					// tempOBJ = {logo: tempOBJ}
+					// object[valueArray[0]] = tempOBJ
+				//endif
+				// if path = object {
+				//}
+
+
+			//endif	
+		// else
+			// if arrayValue.length > 2 {
+				// tempOBJ = {arrayValue[arrayValue.length-2]: arrayValue[arrayValue.length-1]}
+			//} else {
+				// var indexToStopAt = 0;
+				// for (var i = valueArray.length; i > indexToStopAt; i--) {
+					// if (i == valueArray.length) {
+						// tempOBJ = {valueArray[i-1]: valueArray[i]}
+					//} else {
+						// tempOBJ = {valueArray[i]: tempOBJ}
+					//}
+				// }
+			//}
+
+			// object[valueArray[0]] = tempOBJ
+
+
+			// tempOBJ = {went: value}
+			// tempOBJ = {go: tempOBJ}
+			// tempOBJ = {logo: tempOBJ}
+			// object[valueArray[0]] = tempOBJ
+		//endif	
+
+
+
+		function convert() {
+
+
+
+			var compiledJSON = '{}';
+
+			compiledJSON = JSON.parse(compiledJSON);
+
+
+
+			var oldJSON = document.getElementById('oldJSON').value;
+
+
+
+			var jsonOBJ = JSON.parse(oldJSON);
+
+
+
+			var text = '';
+
+
+
+			loopThrough(jsonOBJ);
+
+
+
+			function loopThrough(object) {
+
+
+
+				var count = Object.keys(object).length;
+
+
+
+				if (count > 0) {
+
+
+
+					for (var i = 0; i < count; i++) {
+
+
+
+						var key = Object.keys(object)[i];
+
+
+
+						var lowerKey = object[key];
+
+
+
+						if (typeof lowerKey != 'string') {
+
+
+
+							if (isNaN(key)){
+
+								text += key + '.';
+
+							}
+
+							loopThrough(lowerKey);
+
+
+
+							if (isNaN(key)){
+
+								text = text.replace(key + '.', '');
+
+							}
+
+
+
+					    } else {
+
+
+
+					    	var key = text + key;
+
+					    	//console.log(key);
+
+
+
+					    	var value = lookupValues[key];
+
+					    	if (!value) {
+
+					    		console.log(key + " needs added to the lookupValues");
+
+					    	}
+
+
+
+					    	//console.log(value);
+
+
+
+					    	if (value && value.indexOf('.') !== -1) {
+
+
+
+					    		valueArray = value.split('.');
+
+					    		value = '';
+
+					    		var obj = '';
+
+					    		// if json this.this.this exists try this.this
+
+					    		// console.log(compiledJSON[valueArray[0]]);
+
+					    		// console.log(valueArray);
+
+
+
+					    		if (!compiledJSON[valueArray[0]]) {
+
+					    			console.log("lvl 0  "+obj + "   " + valueArray);
+
+					    			console.log(obj);
+
+					    			createObjects(valueArray, 0);
+
+					    		} else {
+
+
+
+					    			// for (var i = 0; i < valueArray.length-1; i++) {
+
+
+
+					    			// 	if (obj[valueArray[i]] !== null && typeof obj[valueArray[i]] === 'object') {
+
+					    			// 		console.log("lvl "+ i + "   " + obj + "   " + valueArray);
+
+					    			// 		console.log(obj);
+
+					    			// 		obj = obj[valueArray[i]];
+
+						    		// 	} else {
+
+						    		// 		createObjects(valueArray, i);
+
+						    		// 	}
+
+
+
+					    				
+
+					    			// }
+
+					    			// if second to last in array is object then add the array[last] = tempOBJ
+
+					    			// else if second to last in array is value, then 
+
+
+
+
+
+					    			obj = compiledJSON[valueArray[0]];
+
+					    			console.log(obj);
+
+
+
+
+
+
+
+
+
+					    			// obj = compiledJSON[valueArray[0]];
+
+					    			// if (obj[valueArray[1]] !== null && typeof obj[valueArray[1]] === 'object') {
+
+					    			// 	console.log("lvl 1  "+obj + "   " + valueArray);
+
+						    		// 	console.log(obj);
+
+						    		// 	if (!obj[valueArray[1]]) {
+
+							    	// 		createObjects(valueArray, 1);
+
+							    	// 	} else {
+
+							    	// 		obj = obj[valueArray[1]];
+
+							    	// 		if (obj[valueArray[2]] !== null && typeof obj[valueArray[2]] === 'object') {
+
+							    	// 			console.log("lvl 2  "+obj + "   " + valueArray);
+
+								    // 			console.log(obj);
+
+								    // 			if (!obj[valueArray[2]]) {
+
+									   //  			createObjects(valueArray, 2);
+
+									   //  		} else {
+
+									   //  			obj = obj[valueArray[2]];
+
+									   //  			if (obj[valueArray[3]] !== null && typeof obj[valueArray[3]] === 'object') {
+
+									   //  				console.log("lvl 3  "+obj + "   " + valueArray);
+
+										  //   			console.log(obj);
+
+										  //   			if (!obj[valueArray[3]]) {
+
+											 //    			createObjects(valueArray, 3);
+
+											 //    		} else {
+
+											 //    			obj = obj[valueArray[3]];
+
+											 //    			if (obj[valueArray[4]] !== null && typeof obj[valueArray[4]] === 'object') {
+
+											 //    				console.log("lvl 4  "+obj + "   " + valueArray);
+
+												//     			console.log(obj);
+
+												//     			if (!obj[valueArray[4]]) {
+
+												// 	    			createObjects(valueArray, 4);
+
+												// 	    		}
+
+											 //    			}
+
+											 //    		}
+
+									   //  			}
+
+									   //  		}
+
+								    // 		}
+
+							    	// 	}
+
+							    	// }
+
+					    		}
+
+
+
+					    		// WONT WORK WITH BRACKETS
+
+					    		// for (var i = 0; i < valueArray.length - 1; i++) {
+
+					    		// 	console.log(compiledJSON[valueArray[0]]);
+
+					    		// 	if (compiledJSON[valueArray[0]]) {
+
+					    		// 		if (i == 0) {
+
+						    	// 			var obj = compiledJSON[valueArray[i]];
+
+						    	// 			console.log(obj);
+
+						    	// 		} else {
+
+						    	// 			if (obj[valueArray[i]]) {
+
+							    // 				obj = obj[valueArray[i]];
+
+							    // 				console.log(obj);
+
+						    	// 			} else {
+
+						    	// 				break;
+
+						    	// 			}
+
+						    	// 		}
+
+					    		// 	} else {
+
+					    		// 		break;
+
+					    		// 	}
+
+					    		// }
+
+					    		// obj[valueArray[returnVal]] = 'testsss';
+
+					    		// obj.test = 'tests';
+
+
+
+
+
+					    		function createObjects(valueArray, indexToStopAt) {
+
+					    			var tempOBJ = '';
+
+					    			var length = valueArray.length - 1;
+
+					    			var lastOne = valueArray.length - 1;
+
+
+
+					    			if (length > 1) {
+
+						    			for (var i = length; i > indexToStopAt; i--) {
+
+
+
+						    				if (i == lastOne) {
+
+						    					tempOBJ = '{"'+valueArray[i]+'": "'+lowerKey+'"}';
+
+						    				} else {
+
+					    						tempOBJ = '{"'+valueArray[i]+'": '+tempOBJ+'}';
+
+					    						// This will make arrays and [0] necessary.  need to see how the actual config is tempOBJ = '{"'+valueArray[i]+'": ['+tempOBJ+']}';
+
+						    				}	
+
+							    			if (i == indexToStopAt) {
+
+							    				break;
+
+							    			}				    				
+
+							    		}
+
+
+
+							    		if (i == 0) {
+
+						    					tempOBJ = JSON.parse(tempOBJ);
+
+						    					compiledJSON[valueArray[0]] = tempOBJ;
+
+						    				} else {
+
+						    					if (i == 1) {
+
+							    					tempOBJ = JSON.parse(tempOBJ);
+
+							    					compiledJSON[valueArray[0]][valueArray[1]] = tempOBJ;
+
+							    				} else {
+
+							    					if (i == 2) {
+
+								    					tempOBJ = JSON.parse(tempOBJ);
+
+								    					compiledJSON[valueArray[0]][valueArray[1]][valueArray[2]] = tempOBJ;
+
+								    				} else {
+
+								    					if (i == 3) {
+
+									    					tempOBJ = JSON.parse(tempOBJ);
+
+									    					compiledJSON[valueArray[0]][valueArray[1]][valueArray[2]][valueArray[3]] = tempOBJ;
+
+									    				} else {
+
+									    					if (i == 4) {
+
+										    					tempOBJ = JSON.parse(tempOBJ);
+
+										    					compiledJSON[valueArray[0]][valueArray[1]][valueArray[2]][valueArray[3]][valueArray[4]] = tempOBJ;
+
+										    				}
+
+									    				}
+
+								    				}	
+
+							    				}	
+
+						    				}
+
+						    		} else {
+
+						    			tempOBJ = '{"'+valueArray[1]+'": "'+lowerKey+'"}';
+
+						    		}
+
+
+
+						    		// tempOBJ = JSON.parse(tempOBJ);
+
+						    		// console.log(tempOBJ);
+
+						    		// compiledJSON[valueArray[indexToStopAt]] = tempOBJ;
+
+					    		}
+
+
+
+					    		
+
+
+
+
+
+					    		// if (compiledJSON[valueArray[0]].test) {
+
+					    		// 	console.log('test true');
+
+					    		// } else {
+
+					    		// 	console.log('test false');
+
+					    		// }
+
+
+
+					    		// var news = '{"msg": "help"}';
+
+					    		// news = JSON.parse(news);
+
+
+
+					    		// compiledJSON[valueArray[0]].test = news;
+
+					    		// if (compiledJSON[valueArray[0]].test.msg) {
+
+					    		// 	console.log('msg true');
+
+					    		// } else {
+
+					    		// 	console.log('msg false');
+
+					    		// }
+
+
+
+					    		// if (compiledJSON[valueArray[0]].test.dog) {
+
+					    		// 	console.log('dog true');
+
+					    		// } else {
+
+					    		// 	console.log('dog false');
+
+					    		// }
+
+					    		// compiledJSON[valueArray[0]].test.dog = "hi";
+
+
+
+					    		// if (compiledJSON[valueArray[0]].test.dog) {
+
+					    		// 	console.log('dog true');
+
+					    		// } else {
+
+					    		// 	console.log('dog false');
+
+					    		// }
+
+
+
+
+
+
+
+					    		// console.log(tempOBJ);
+
+
+
+					    		// compiledJSON[valueArray[0]]['test'] = "hi";
+
+
+
+					    		// console.log(valueArray);
+
+					    		// console.log(valueArray[0]);
+
+					    		// console.log(compiledJSON[valueArray[0]][valueArray[1]][valueArray[2]][valueArray[3]]);
+
+					    		// console.log(compiledJSON[valueArray[0]][valueArray[1]][0][valueArray[2]][0][valueArray[3]]);
+
+
+
+					    		
+
+
+
+
+
+					    		// Still trying to test if path is there
+
+					    		// remember that brackets will mess up what works
+
+					    		// code above demonstrates that that way will work to add
+
+					    		// on parse take lookupValue
+
+					    			// if level one not exists
+
+					    				// go to last level and add all
+
+					    			// else if level two exists and level three does not exist
+
+					    					// go to last level and add till two
+
+
+
+					    				// if level two exists
+
+					    					// if level three exists
+
+					    						// if first time add
+
+
+
+					    						function addValues(originalObject, intoObject, valueObject, valueArray) {
+
+					    							var value = valueArray[valueArray.length-1];
+
+					    							var firstName = valueArray[valueArray.length-2];
+
+					    							var tempOBJ = '';
+
+
+
+					    							// go to last and add {"'+firstName+'": "'+value+'"}
+
+					    							// go to next to last
+
+					    								//if next to last = value object then value object = '{"'+valueArray[i]+'": '+tempOBJ+'}';
+
+					    									// intoObject[valueArray[i]] = valueObject
+
+
+
+
+
+
+
+					    							tempOBJ = '{"'+firstName+'": "'+value+'"}';
+
+
+
+
+
+					    						}
+
+
+
+
+
+					    						function searchObject(originalObject, currentObject, valueArray) {
+
+					    							for (var i = 0; i < valueArray.length -1; i++) { // minus 1 since the last value is the value to enter
+
+					    								if (!currentObject[ValueArray[i]]) { //if value doesnt exist, add all arrays back to the one after this, then add that
+
+					    									addValues(originalObject, currentObject[ValueArray[i]],ValueArray[i+1], valueArray);
+
+					    									// go to end and add value
+
+					    										// add valueArray[last] to 
+
+
+
+					    								} else {
+
+					    									searchObject(originalObject, currentObject[ValueArray[i]], valueArray);
+
+					    								}
+
+					    							}
+
+					    						}
+
+
+
+
+
+					    						// if not exists in originalObject[valueArray[0]]
+
+				    								// go to end and add back to object[valueArray[1]]
+
+				    								// tmpOBJ = 
+
+				    								// then object[valueArray[0]] = object[valueArray[1]]
+
+
+
+					    							// function addValues(arrayValues, indexToStopAt) {
+
+					    								// create arrays backwards until index
+
+					    							//}
+
+
+
+					    						// else
+
+					    							//object = originalObject[valueArray[0]]
+
+					    							// if object[valueArray[1]] not exists or value is not object (second value in array)
+
+					    								// go to end and add back to object[valueArray[2]]
+
+					    								// then object[valueArray[1]] = object[valueArray[2]]
+
+					    							// else 
+
+					    								//object = object[valueArray[1]]
+
+					    								// if not exists on object[valueArray[1]] (first value in array)
+
+					    									// go to end and add back to three
+
+					    								// else
+
+					    									// if not exists on four
+
+					    										// go to end and add back to four
+
+					    									//
+
+
+
+
+
+
+
+					    								// else 
+
+					    									// obj = compiledJSON[valueArray[i]];
+
+					    									// obj = obj[valueArray[i]];
+
+
+
+					    				// Stopped on the compiling JSON parts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					    		// EXAMPLE compiledJSON[valueArray[0]][valueArray[1]][0][valueArray[2]][0][valueArray[3]]
+
+
+
+								// console.log(compiledJSON[valueArray[valueArray[0]]]);
+
+								// console.log(compiledJSON[valueArray[valueArray[1]]]);
+
+					    		// console.log(compiledJSON[valueArray[0]][test]);
+
+
+
+
+
+
+
+					    	} else {
+
+					    		if (value) {
+
+					    			compiledJSON[value] = lowerKey;
+
+					    		}
+
+					    	}
+
+
+
+
+
+					    // 	var key = text + key;
+
+					    // 	//console.log(key);
+
+
+
+					    // 	var value = lookupValues[key];
+
+					    // 	// console.log(value);
+
+
+
+					    // 	//console.log(value);
+
+
+
+					    // 	if (value.indexOf('.') !== -1) {
+
+
+
+					    // 		var tempOBJ = '';
+
+					    // 		valueArray = value.split('.');
+
+					    // 		value = '';
+
+					    // 		var length = valueArray.length - 1;
+
+					    // 		// if json this.this.this exists try this.this
+
+
+
+					    // 		function alreadyExists(obj, currentIteration) {
+
+				    	// 			for (var i = 0; i < currentIteration; i++) {
+
+									// 	if (!obj.hasOwnProperty(arguments[i])) {
+
+									// 		return false;
+
+									// 	}
+
+									// 	obj = obj[arguments[i]];
+
+									// }
+
+									// return true;
+
+				    	// 		}
+
+
+
+					    // 		// console.log(valueArray);
+
+
+
+					    // 		// console.log(compiledJSON[valueArray[0]]);
+
+
+
+					    // 			// console.log(compiledJSON.hasOwnProperty(valueArray[0]));
+
+
+
+					    // 			if (alreadyExists(compiledJSON, valueArray[0])) {
+
+			    		// 				console.log('exists');
+
+			    		// 			} else {
+
+			    		// 				console.log('doesnt exist');
+
+			    		// 			}
+
+
+
+					    // 		if (length > 1) {
+
+					    // 			for (var i = length; i > 0; i--) {
+
+
+
+					    // 				// if (alreadyExists(compiledJSON, i)) {
+
+				    	// 				// 	console.log('exists');
+
+				    	// 				// }
+
+					    				
+
+					    // 				if (i == length) {
+
+
+
+
+
+
+
+
+
+					    // 					if (!compiledJSON[valueArray[i]]) {
+
+					    // 						tempOBJ = '{"'+valueArray[i]+'": "'+lowerKey+'"}';
+
+					    // 					}
+
+					    // 				} else {
+
+					    // 					if (!compiledJSON[valueArray[i]]) {
+
+					    // 						tempOBJ = '{"'+valueArray[i]+'": ['+tempOBJ+']}';
+
+					    // 					}
+
+					    // 				}
+
+						   //  		}
+
+					    // 		} else {
+
+					    // 			tempOBJ += '{"'+valueArray[1]+'": "'+lowerKey+'"}';
+
+					    // 		}
+
+
+
+					    // 		tempOBJ = JSON.parse(tempOBJ);
+
+
+
+					    // 		compiledJSON[valueArray[0]] = tempOBJ;
+
+
+
+					    // 		if (alreadyExists(compiledJSON, valueArray[0])) {
+
+		    			// 			console.log('exists');
+
+		    			// 		} else {
+
+		    			// 			console.log('doesnt exist');
+
+		    			// 		}
+
+
+
+					    // 		// console.log(compiledJSON);
+
+					    // 		// console.log(compiledJSON[valueArray[0]][valueArray[1]]);
+
+					    // 		// console.log(compiledJSON[valueArray[1]].hasOwnProperty(valueArray[1]));
+
+
+
+					    // 	} else {
+
+					    // 		compiledJSON[value] = lowerKey;
+
+					    // 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					    	// var key = text + key;
+
+					    	// //console.log(key);
+
+
+
+					    	// var value = lookupValues[key];
+
+					    	// // console.log(value);
+
+
+
+					    	// console.log(value);
+
+
+
+					    	// if (value.indexOf('.') !== -1) {
+
+
+
+					    	// 	var tempOBJ = '';
+
+					    	// 	valueArray = value.split('.');
+
+					    	// 	value = '';
+
+					    	// 	var length = valueArray.length - 1;
+
+
+
+					    	// 	if (length > 1) {
+
+					    	// 		for (var i = length; i > 0; i--) {
+
+					    	// 			if (i == length) {
+
+					    	// 				tempOBJ = '{"'+valueArray[i]+'": "'+lowerKey+'"}';
+
+					    	// 			} else {
+
+					    	// 				tempOBJ = '{"'+valueArray[i]+'": ['+tempOBJ+']}';
+
+					    	// 			}
+
+						    // 		}
+
+					    	// 	} else {
+
+					    	// 		tempOBJ += '{"'+valueArray[1]+'": "'+lowerKey+'"}';
+
+					    	// 	}
+
+
+
+					    	// 	tempOBJ = JSON.parse(tempOBJ);
+
+
+
+					    	// 	compiledJSON[valueArray[0]] = tempOBJ;
+
+
+
+					    	// } else {
+
+					    	// 	compiledJSON[value] = lowerKey;
+
+					    	// }
+
+						}
+
+					}
+
+					return;
+
+				}
+
+			}
+
+
+
+			var jsonPretty = JSON.stringify(compiledJSON, null, 4);
+
+
+
+			document.getElementById('newJSON').value = jsonPretty;
+
+		}
+
+
+
+	</script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

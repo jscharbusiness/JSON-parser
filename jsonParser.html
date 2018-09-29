@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JSON converter</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+	<style>
+		body {
+			font-family: 'Raleway', sans-serif;
+		}	
+
+	</style>
+</head>
+<body>
+	<textarea name="oldJSON" id="oldJSON" cols="70" rows="30">
+		{
+		    "Header": [
+		        {
+		        	"Template": "L",
+		        	"Logo": [
+			        	{
+			            	"logoSettings": [
+					        	{
+					            	"url": "/images/layout/headerLogo.png",
+					            	"width": "275px",
+					            	"height": "42px"
+					            }
+					        ],
+			            	"width": "275px",
+			            	"height": "42px"
+			            }
+			        ],
+			        "Styles": [
+			        	{
+			        		"height": "105px",
+			        		"position": "fixed",
+			        		"background-color": "rgba(0,0,0,.5)",
+			        		"background-gradient": "0",
+			        		"max-width": "1280px"
+			        	}
+			        ],
+			        "Mobile": [
+			        	{
+			        		"height": "95px"
+			        	}
+			        ]
+		        }
+		    ]
+		} 
+	</textarea>
+	<textarea name="newJSON" id="newJSON" cols="70" rows="30"></textarea>
+	<button id="convert">Convert</button>
+
+<!-- 
+
+{
+    "Header": [
+        {
+        	"Template": "L",
+        	"Logo": [
+	        	{
+	            	"url": "/images/layout/headerLogo.png",
+	            	"width": "275px",
+	            	"height": "42px"
+	            }
+	        ],
+	        "Styles": [
+	        	{
+	        		"height": "105px",
+	        		"position": "fixed",
+	        		"background-color": "rgba(0,0,0,.5)",
+	        		"background-gradient": "0",
+	        		"max-width": "1280px"
+	        	}
+	        ],
+	        "Mobile": [
+	        	{
+	        		"height": "95px"
+	        	}
+	        ]
+        }
+    ]
+} 
+
+-->
+
+
+
+	<!-- Go through checklist and have hidden divs  -->
+
+
+
+	<script>
+
+
+
+
+
+
+
+
+		
+		document.getElementById('convert').addEventListener('click', convert);
+
+
+		// Array with currentJSON possible values as Keys.  newJSON paths as values. On submit if the "path" exists, add to newJSON file to put in the config.
+
+
+		// Go through all possible things in json and use that to look up the name of that "path".  Then add the name and the value to the new json config
+
+		// var lookupValues = [
+		// 	SiteHeader: "L",
+		// 	HeaderPosition: "fixed",
+		// 	HeaderLogoURL: "/images/laout/headerLogo.png",
+		// 	HeaderLogoWidth: "275px",
+		// 	HeaderLogoHeight: "42px",
+		// 	HeaderHeight: "105px",
+		// 	HeaderBackgroundColor: "rgba(0,0,0,.5)",
+		// 	HeaderBackgroundGrad: "0",
+		// 	HeaderMaxWidth: "1280px"
+		// ];
+
+		// var lookupValues = {
+		// 	SiteHeader: "Header.Template",
+		// 	HeaderPosition: "Header.Styles.position",
+		// 	HeaderLogoURL: "Header.Logo.url",
+		// 	HeaderLogoWidth: "Header.Logo.width",
+		// 	HeaderLogoHeight: "Header.Logo.height",
+		// 	HeaderHeight: "Header.Styles.height",
+		// 	HeaderBackgroundColor: "Header.Styles.background-color",
+		// 	HeaderBackgroundGrad: "Header.Styles.background-gradient",
+		// 	HeaderMaxWidth: "Header.Styles.max-width"
+		// };
+
+		var lookupValues = {
+			"Header.Template": "SiteHeader",
+			"Header.Styles.position": "HeaderPosition",
+			"Header.Logo.url": "HeaderLogoURL",
+			"Header.Logo.width": "HeaderLogoWidth",
+			"Header.Logo.height": "HeaderLogoHeight",
+			"Header.Styles.height": "HeaderHeight",
+			"Header.Styles.background-color": "HeaderBackgroundColor",
+			"Header.Styles.background-gradient": "HeaderBackgroundGrad",
+			"Header.Styles.max-width": "HeaderMaxWidth"
+		};
+
+		var neededValues = [
+			"SiteHeader",
+			"HeaderPosition",
+			"HeaderLogoURL",
+			"HeaderLogoWidth",
+			"HeaderLogoHeight",
+			"HeaderHeight",
+			"HeaderBackgroundColor",
+			"HeaderBackgroundGrad",
+			"HeaderMaxWidth"
+		];
+
+
+		// var somedata = {
+		//    "Pizza" : ["Cheese", "Bread", "Sauce"],
+		//    "Spaghetti" : ["Pasta", "Sauce", "Meatballs"]
+		// }
+
+		// Object.keys(somedata)       // returns  ["Pizza", "Spaghetti"]
+		// Object.keys(somedata)[0]   // returns  "Pizza"
+		// Object.keys(somedata)[1]   // returns "Spaghetti"
+
+		// somedata["Pizza"]    // returns ["Cheese", "Bread", "Sauce"]
+		// somedata["Spaghetti"]   // returns  ["Pasta", "Sauce", "Meatballs"]
+
+		// //---------------
+		// Object.values(somedata)        // returns  [Array(3), Array(3)]
+		// Object.values(somedata)[0]    // returns ["Cheese", "Bread", "Sauce"]
+		// Object.values(somedata)[1]    // returns ["Pasta", "Sauce", "Meatballs"]
+
+
+		function convert() {
+			var oldJSON = document.getElementById('oldJSON').value;
+
+			var jsonOBJ = JSON.parse(oldJSON);
+
+			var text = '';
+
+			loopThrough(jsonOBJ);
+
+			function loopThrough(object) {
+
+				var count = Object.keys(object).length;
+
+				if (count > 0) {
+
+					for (var i = 0; i < count; i++) {
+
+						var key = Object.keys(object)[i];
+
+						var lowerKey = object[key];
+
+						if (typeof lowerKey != 'string') {
+
+							if (isNaN(key)){
+								text += key + '.';
+							}
+							loopThrough(lowerKey);
+
+							if (isNaN(key)){
+								text = text.replace(key + '.', '');
+							}
+
+					    } else {
+					    	console.log(text + key + ' = ' + lowerKey);
+						}
+					}
+					return;
+				}
+			}
+		}
+
+	</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

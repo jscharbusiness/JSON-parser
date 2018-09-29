@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JSON converter</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+	<style>
+		body {
+			font-family: 'Raleway', sans-serif;
+		}	
+
+	</style>
+</head>
+<body>
+	<textarea name="oldJSON" id="oldJSON" cols="70" rows="30">
+		{
+		    "Header": [
+		        {
+		        	"Template": "L",
+		        	"Logo": [
+			        	{
+			            	"url": "/images/layout/headerLogo.png",
+			            	"width": "275px",
+			            	"height": "42px"
+			            }
+			        ],
+			        "Styles": [
+			        	{
+			        		"height": "105px",
+			        		"position": "fixed",
+			        		"background-color": "rgba(0,0,0,.5)",
+			        		"background-gradient": "0",
+			        		"max-width": "1280px"
+			        	}
+			        ],
+			        "Mobile": [
+			        	{
+			        		"height": "95px"
+			        	}
+			        ]
+		        }
+		    ]
+		} 
+	</textarea>
+	<textarea name="newJSON" id="newJSON" cols="70" rows="30"></textarea>
+	<button id="convert">Convert</button>
+
+<!-- 
+
+{
+    "Header": [
+        {
+        	"Template": "L",
+        	"Logo": [
+	        	{
+	            	"url": "/images/layout/headerLogo.png",
+	            	"width": "275px",
+	            	"height": "42px"
+	            }
+	        ],
+	        "Styles": [
+	        	{
+	        		"height": "105px",
+	        		"position": "fixed",
+	        		"background-color": "rgba(0,0,0,.5)",
+	        		"background-gradient": "0",
+	        		"max-width": "1280px"
+	        	}
+	        ],
+	        "Mobile": [
+	        	{
+	        		"height": "95px"
+	        	}
+	        ]
+        }
+    ]
+} 
+
+-->
+
+
+
+	<!-- Go through checklist and have hidden divs  -->
+
+
+
+	<script>
+
+
+
+
+
+
+
+
+		
+		document.getElementById('convert').addEventListener('click', convert);
+
+
+		// Array with currentJSON possible values as Keys.  newJSON paths as values. On submit if the "path" exists, add to newJSON file to put in the config.
+
+
+		// Go through all possible things in json and use that to look up the name of that "path".  Then add the name and the value to the new json config
+
+		// var lookupValues = [
+		// 	SiteHeader: "L",
+		// 	HeaderPosition: "fixed",
+		// 	HeaderLogoURL: "/images/laout/headerLogo.png",
+		// 	HeaderLogoWidth: "275px",
+		// 	HeaderLogoHeight: "42px",
+		// 	HeaderHeight: "105px",
+		// 	HeaderBackgroundColor: "rgba(0,0,0,.5)",
+		// 	HeaderBackgroundGrad: "0",
+		// 	HeaderMaxWidth: "1280px"
+		// ];
+
+		// var lookupValues = {
+		// 	SiteHeader: "Header.Template",
+		// 	HeaderPosition: "Header.Styles.position",
+		// 	HeaderLogoURL: "Header.Logo.url",
+		// 	HeaderLogoWidth: "Header.Logo.width",
+		// 	HeaderLogoHeight: "Header.Logo.height",
+		// 	HeaderHeight: "Header.Styles.height",
+		// 	HeaderBackgroundColor: "Header.Styles.background-color",
+		// 	HeaderBackgroundGrad: "Header.Styles.background-gradient",
+		// 	HeaderMaxWidth: "Header.Styles.max-width"
+		// };
+
+
+		// var somedata = {
+		//    "Pizza" : ["Cheese", "Bread", "Sauce"],
+		//    "Spaghetti" : ["Pasta", "Sauce", "Meatballs"]
+		// }
+
+		// Object.keys(somedata)       // returns  ["Pizza", "Spaghetti"]
+		// Object.keys(somedata)[0]   // returns  "Pizza"
+		// Object.keys(somedata)[1]   // returns "Spaghetti"
+
+		// somedata["Pizza"]    // returns ["Cheese", "Bread", "Sauce"]
+		// somedata["Spaghetti"]   // returns  ["Pasta", "Sauce", "Meatballs"]
+
+		// //---------------
+		// Object.values(somedata)        // returns  [Array(3), Array(3)]
+		// Object.values(somedata)[0]    // returns ["Cheese", "Bread", "Sauce"]
+		// Object.values(somedata)[1]    // returns ["Pasta", "Sauce", "Meatballs"]
+
+		// var neededValues = [
+		// 	"SiteHeader",
+		// 	"HeaderPosition",
+		// 	"HeaderLogoURL",
+		// 	"HeaderLogoWidth",
+		// 	"HeaderLogoHeight",
+		// 	"HeaderHeight",
+		// 	"HeaderBackgroundColor",
+		// 	"HeaderBackgroundGrad",
+		// 	"HeaderMaxWidth"
+		// ];
+
+
+		var lookupValues = {
+			"Header.Template": "SiteHeader",
+			"Header.Styles.position": "HeaderPosition",
+			"Header.Logo.url": "HeaderLogoURL.url.hi",
+			"Header.Logo.width": "HeaderLogoWidth",
+			"Header.Logo.height": "HeaderLogoHeight",
+			"Header.Styles.height": "HeaderHeight",
+			"Header.Styles.background-color": "HeaderBackgroundColor",
+			"Header.Styles.background-gradient": "HeaderBackgroundGrad",
+			"Header.Styles.max-width": "HeaderMaxWidth",
+			"Header.Mobile.height": "HeaderHeightMobile"
+		};
+
+		function convert() {
+
+			var compiledJSON = '{}';
+			compiledJSON = JSON.parse(compiledJSON);
+
+
+			var oldJSON = document.getElementById('oldJSON').value;
+
+			var jsonOBJ = JSON.parse(oldJSON);
+
+			var text = '';
+
+			loopThrough(jsonOBJ);
+
+			function loopThrough(object) {
+
+				var count = Object.keys(object).length;
+
+				if (count > 0) {
+
+					for (var i = 0; i < count; i++) {
+
+						var key = Object.keys(object)[i];
+
+						var lowerKey = object[key];
+
+						if (typeof lowerKey != 'string') {
+
+							if (isNaN(key)){
+								text += key + '.';
+							}
+							loopThrough(lowerKey);
+
+							if (isNaN(key)){
+								text = text.replace(key + '.', '');
+							}
+
+					    } else {
+
+
+					    	var key = text + key;
+					    	//console.log(key);
+
+					    	var value = lookupValues[key];
+					    	// console.log(value);
+
+					    	console.log(value);
+
+					    	if (value.indexOf('.') !== -1) {
+
+					    		var tempOBJ = '';
+					    		valueArray = value.split('.');
+					    		// console.log(value);
+					    		value = '';
+
+					    		// console.log(valueArray);
+
+					    		//console.log(valueArray.length);
+
+					    		var length = valueArray.length - 1;
+
+
+					    		if (length > 1) {
+					    			// tempOBJ = '{"'+(length)+'": "'+lowerKey+'"}';
+					    			for (var i = length; i > 0; i--) {
+					    				if (i == length) {
+					    					tempOBJ = '{"'+valueArray[i]+'": "'+lowerKey+'"}';
+					    				} else {
+					    					tempOBJ = '{"'+valueArray[i]+'": ['+tempOBJ+']}';
+					    				}
+						    		}
+					    		} else {
+					    			tempOBJ += '{"'+valueArray[1]+'": "'+lowerKey+'"}';
+					    		}
+
+					    		tempOBJ = JSON.parse(tempOBJ);
+
+					    		compiledJSON[valueArray[0]] = tempOBJ;
+
+
+					    		// for (var i = 1; i < valueArray.length; i++) {
+					    		// 	tempOBJ += '{"'+valueArray[i]+'": "'+lowerKey+'"}';
+					    		// 	tempOBJ = JSON.parse(tempOBJ);
+					    		// }
+
+					    		// compiledJSON[valueArray[0]] = tempOBJ;
+
+					    	} else {
+					    		compiledJSON[value] = lowerKey;
+					    	}
+
+
+					    	// break by periods
+					    	// start at end. put value in object
+					    	// put object in object
+					    	// put object in object
+
+
+
+
+					    	// Logo.width.in = 20
+					    	// Logo.height = 42px
+					    	// "Logo": [
+					     //    	{
+					     //        	"width": [
+					     //        		{
+					     //        			"in": "20"
+					     //        		}
+					     //        	],
+					     //        	"height": "42px"
+					     //        }
+					     //    ],
+
+					        // Logo.width.in = 20
+					        // "Logo": [
+					        // 	{
+					        //     	"width": [
+					        //     		{
+					        //     			"in": "20"
+					        //     		}
+					        //     	]
+					        //     }
+					        // ],
+
+
+
+
+
+
+
+					    	// Need a way to create a layered object if it is something.something
+					    	//This all needs rewritten
+
+					  //   	var value = lookupValues[text + key];
+
+							// if (value) {
+							// 	if (value.indexOf('.')) {
+							// 		valueArray = value.split('.');
+							// 		value = '';
+							// 		valueArray.forEach(function(currentValue) {
+							// 			if (currentValue == valueArray[valueArray.length-1]) {
+							// 				value += '' + currentValue + ']';
+							// 			} else {
+							// 				value += '' + currentValue + '][';
+							// 			}
+							// 		});
+							// 		compiledJSON[value] = lowerKey;
+							// 		// console.log(value);
+							// 	} else {
+							// 		compiledJSON[value] = lowerKey;
+							// 	}
+					  //   		// compiledJSON[lookupValues[text + key]] = lowerKey;
+					  //   		//console.log(text + key + ' = ' + lowerKey);
+					  //   	} else {
+					  //   		compiledJSON[text + key] = lowerKey;
+					  //   		//compiledJSON += '"' + text + key + '": "' + lowerKey + '",';
+					  //   		console.log("UNDEFINED IN LOOKUP ARRAY: " + text + key + ' = ' + lowerKey);
+
+					  //   	}					    	
+
+					    	// if (lookupValues[text + key]) {
+					    	// 	compiledJSON += '"' + lookupValues[text + key] + '": "' + lowerKey + '",';
+					    	// 	console.log(text + key + ' = ' + lowerKey);
+					    	// } else {
+					    	// 	compiledJSON += '"' + text + key + '": "' + lowerKey + '",';
+					    	// 	console.log("UNDEFINED IN LOOKUP ARRAY: " + text + key + ' = ' + lowerKey);
+
+					    	// }
+
+						}
+					}
+					return;
+				}
+			}
+
+			// compiledJSON += ' }';
+
+			var jsonPretty = JSON.stringify(compiledJSON, null, 4);
+
+			document.getElementById('newJSON').value = jsonPretty;
+		}
+
+		// var lookupValues = {
+		// 	"Header.Template": "SiteHeader",
+		// 	"Header.Styles.position": "HeaderPosition",
+		// 	"Header.Logo.url": "HeaderLogoURL",
+		// 	"Header.Logo.width": "HeaderLogoWidth",
+		// 	"Header.Logo.height": "HeaderLogoHeight",
+		// 	"Header.Styles.height": "HeaderHeight",
+		// 	"Header.Styles.background-color": "HeaderBackgroundColor",
+		// 	"Header.Styles.background-gradient": "HeaderBackgroundGrad",
+		// 	"Header.Styles.max-width": "HeaderMaxWidth",
+		// 	"Header.Mobile.height": "HeaderHeightMobile"
+		// };
+
+		// var neededValues = [
+		// 	"SiteHeader",
+		// 	"HeaderPosition",
+		// 	"HeaderLogoURL",
+		// 	"HeaderLogoWidth",
+		// 	"HeaderLogoHeight",
+		// 	"HeaderHeight",
+		// 	"HeaderBackgroundColor",
+		// 	"HeaderBackgroundGrad",
+		// 	"HeaderMaxWidth"
+		// ];
+
+		// function convert() {
+
+		// 	var compiledJSON = '{ ';
+		// 	var oldJSON = document.getElementById('oldJSON').value;
+
+		// 	var jsonOBJ = JSON.parse(oldJSON);
+
+		// 	var text = '';
+
+		// 	loopThrough(jsonOBJ);
+
+		// 	function loopThrough(object) {
+
+		// 		var count = Object.keys(object).length;
+
+		// 		if (count > 0) {
+
+		// 			for (var i = 0; i < count; i++) {
+
+		// 				var key = Object.keys(object)[i];
+
+		// 				var lowerKey = object[key];
+
+		// 				if (typeof lowerKey != 'string') {
+
+		// 					if (isNaN(key)){
+		// 						text += key + '.';
+		// 					}
+		// 					loopThrough(lowerKey);
+
+		// 					if (isNaN(key)){
+		// 						text = text.replace(key + '.', '');
+		// 					}
+
+		// 			    } else {
+
+		// 			    	if (lookupValues[text + key]) {
+		// 			    		compiledJSON += '"' + lookupValues[text + key] + '": "' + lowerKey + '",';
+		// 			    		console.log(text + key + ' = ' + lowerKey);
+		// 			    	} else {
+		// 			    		compiledJSON += '"' + text + key + '": "' + lowerKey + '",';
+		// 			    		console.log("UNDEFINED IN LOOKUP ARRAY: " + text + key + ' = ' + lowerKey);
+
+		// 			    	}
+
+		// 				}
+		// 			}
+		// 			return;
+		// 		}
+		// 	}
+
+		// 	compiledJSON += ' }';
+
+		// 	let regex = /\,(?!\s*?[\{\[\"\'\w])/g;
+		// 	let correctJSON = compiledJSON.replace(regex, '');
+
+		// 	var jsonPretty = JSON.stringify(JSON.parse(correctJSON), null, 4);
+
+		// 	document.getElementById('newJSON').value = jsonPretty;
+		// }
+
+
+
+	</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
